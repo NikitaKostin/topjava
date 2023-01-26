@@ -35,7 +35,7 @@ public class UserMealsUtil {
             LocalTime currentTime = meal.getDateTime().toLocalTime();
             int comparedStart = currentTime.compareTo(startTime);
             int comparedEnd = currentTime.compareTo(endTime);
-            if ((comparedStart > 0 || comparedStart == 0) && (comparedEnd < 0 || comparedEnd == 0)) {
+            if (comparedStart >= 0 && comparedEnd <= 0) {
                 userMealWithExcess.add(
                         new UserMealWithExcess(
                                 meal.getDateTime(),
@@ -56,7 +56,7 @@ public class UserMealsUtil {
                     LocalTime currentTime = userMeal.getDateTime().toLocalTime();
                     int comparedStart = currentTime.compareTo(startTime);
                     int comparedEnd = currentTime.compareTo(endTime);
-                    return (comparedStart > 0 || comparedStart == 0) && (comparedEnd < 0 || comparedEnd == 0);
+                    return comparedStart >= 0 && comparedEnd <= 0;
                 })
                 .map(userMeal -> new UserMealWithExcess(
                         userMeal.getDateTime(),
