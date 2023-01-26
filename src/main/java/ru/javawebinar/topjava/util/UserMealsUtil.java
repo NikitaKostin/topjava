@@ -9,7 +9,6 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class UserMealsUtil {
@@ -53,20 +52,17 @@ public class UserMealsUtil {
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         return meals
                 .stream()
-                .map(userMeal -> {
+                .filter(userMeal -> {
                     LocalTime currentTime = userMeal.getDateTime().toLocalTime();
                     int comparedStart = currentTime.compareTo(startTime);
                     int comparedEnd = currentTime.compareTo(endTime);
-                    if ((comparedStart > 0 || comparedStart == 0) && (comparedEnd < 0 || comparedEnd == 0)) {
-                        return new UserMealWithExcess(
-                                userMeal.getDateTime(),
-                                userMeal.getDescription(),
-                                userMeal.getCalories(),
-                                userMeal.getCalories() > caloriesPerDay);
-                    }
-                    return null;
+                    return (comparedStart > 0 || comparedStart == 0) && (comparedEnd < 0 || comparedEnd == 0);
                 })
-                .filter(Objects::nonNull)
+                .map(userMeal -> new UserMealWithExcess(
+                        userMeal.getDateTime(),
+                        userMeal.getDescription(),
+                        userMeal.getCalories(),
+                        userMeal.getCalories() > caloriesPerDay))
                 .collect(Collectors.toList());
     }
 }
