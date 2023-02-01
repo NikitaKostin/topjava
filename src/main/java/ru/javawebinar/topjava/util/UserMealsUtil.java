@@ -53,7 +53,7 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        Map<LocalDate, Integer> caloriesMap = meals
+        Map<LocalDate, Integer> caloriesAggregateByDayMap = meals
                 .stream()
                 .collect(Collectors.toMap(userMeal -> userMeal.getDateTime().toLocalDate(), UserMeal::getCalories, Integer::sum));
 
@@ -64,7 +64,7 @@ public class UserMealsUtil {
                         userMeal.getDateTime(),
                         userMeal.getDescription(),
                         userMeal.getCalories(),
-                        caloriesMap.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay))
+                        caloriesAggregateByDayMap.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
     }
 }
