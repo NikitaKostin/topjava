@@ -11,7 +11,7 @@
 
     <function>
         <name>formatLocalDateTime</name>
-        <function-class>ru.javawebinar.topjava.util.Dates</function-class>
+        <function-class>ru.javawebinar.topjava.util.DatesUtil</function-class>
         <function-signature>java.lang.String formatLocalDateTime(java.time.LocalDateTime, java.lang.String)</function-signature>
     </function>
 </taglib>

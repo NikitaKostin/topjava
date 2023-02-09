@@ -22,10 +22,11 @@
     </tr>
     <jsp:useBean id="mealsTo" scope="request" type="java.util.List"/>
     <c:forEach items="${mealsTo}" var="mealTo">
-        <tr style="color:${mealTo.isExcess() ? "red" : "green"}">
-            <td>${f:formatLocalDateTime(mealTo.getDateTime(), 'dd.MM.yyyy HH:mm')}</td>
-            <td>${mealTo.getDescription()}</td>
-            <td>${mealTo.getCalories()}</td>
+        <jsp:useBean id="mealTo" scope="request" type="ru.javawebinar.topjava.model.MealTo"/>
+        <tr style="color:${mealTo.excess ? "red" : "green"}">
+            <td>${f:formatLocalDateTime(mealTo.dateTime, 'dd.MM.yyyy HH:mm')}</td>
+            <td>${mealTo.description}</td>
+            <td>${mealTo.calories}</td>
         </tr>
     </c:forEach>
 </table>
