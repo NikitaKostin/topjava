@@ -30,7 +30,7 @@ public class InMemoryMealRepository implements MealRepository {
             return meal;
         }
 
-        if (!meal.getUserid().equals(userId)) {
+        if (!meal.getUserid().equals(userId) || !repository.get(meal.getId()).getUserid().equals(userId)) {
             return null;
         }
 
