@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 public class MealServlet extends HttpServlet {
@@ -40,8 +41,8 @@ public class MealServlet extends HttpServlet {
                 authUserId()
         );
 
+        checkNotFoundWithId(repository.save(meal, authUserId()), meal.getId());
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        repository.save(meal, authUserId());
         response.sendRedirect("meals");
     }
 
@@ -52,15 +53,15 @@ public class MealServlet extends HttpServlet {
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = getId(request);
+                checkNotFoundWithId(repository.delete(id, authUserId()), id);
                 log.info("Delete id={}", id);
-                repository.delete(id, authUserId());
                 response.sendRedirect("meals");
                 break;
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
                         new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, authUserId()) :
-                        repository.get(getId(request), authUserId());
+                        checkNotFoundWithId(repository.get(getId(request), authUserId()),getId(request) );
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
