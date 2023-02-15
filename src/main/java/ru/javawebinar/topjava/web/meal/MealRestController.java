@@ -56,5 +56,4 @@ public class MealRestController {
         assureIdConsistent(meal, id);
         service.update(meal, authUserId());
     }
-
 }
