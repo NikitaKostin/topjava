@@ -1,19 +1,50 @@
 package ru.javawebinar.topjava.model;
 
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import org.hibernate.validator.constraints.Range;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+@NamedQueries({
+        @NamedQuery(name = Meal.BY_USERS, query = "SELECT m FROM Meal m WHERE m.id=:id AND m.user.id=:userId"),
+        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id"),
+        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m LEFT JOIN FETCH m.user"
+                + " WHERE m.user.id=:userId ORDER BY m.dateTime DESC"
+        ),
+        @NamedQuery(name = Meal.ALL_FILTER_BY_DATE_TIME_SORTED, query = "SELECT m FROM Meal m LEFT JOIN FETCH m.user "
+                + " WHERE m.user.id=:userId AND m.dateTime >= :startDateTime AND m.dateTime < :endDateTime"
+                + " ORDER BY m.dateTime DESC"
+        )
+})
+@Entity
+@Table(name = "meal", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date_time"})})
 public class Meal extends AbstractBaseEntity {
+
+    public static final String BY_USERS = "Meal.getByUsers";
+    public static final String DELETE = "Meal.delete";
+    public static final String ALL_SORTED = "Meal.getAllSortedByDateTimeDesc";
+    public static final String ALL_FILTER_BY_DATE_TIME_SORTED = "Meal.getAllFilteredByDateTimeAndSortedByDateTimeDesc";
+
+    @Column(name = "date_time", nullable = false)
+    @NotNull
     private LocalDateTime dateTime;
 
+    @Column(name = "description", nullable = false)
+    @NotBlank
     private String description;
 
+    @Column(name = "calories", nullable = false)
+    @NotNull
+    @Range(min = 10, max = 10000)
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @NotNull
     private User user;
 
     public Meal() {
