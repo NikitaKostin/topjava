@@ -5,17 +5,18 @@ import org.hibernate.validator.constraints.Range;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @NamedQueries({
-        @NamedQuery(name = Meal.BY_USERS, query = "SELECT m FROM Meal m WHERE m.id=:id AND m.user.id=:userId"),
-        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id"),
-        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m LEFT JOIN FETCH m.user"
+        @NamedQuery(name = Meal.GET, query = "SELECT m FROM Meal m WHERE m.id=:id AND m.user.id=:userId"),
+        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id AND m.user.id=:userId"),
+        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m"
                 + " WHERE m.user.id=:userId ORDER BY m.dateTime DESC"
         ),
-        @NamedQuery(name = Meal.ALL_FILTER_BY_DATE_TIME_SORTED, query = "SELECT m FROM Meal m LEFT JOIN FETCH m.user "
+        @NamedQuery(name = Meal.ALL_FILTER_BY_DATE_TIME_SORTED, query = "SELECT m FROM Meal m"
                 + " WHERE m.user.id=:userId AND m.dateTime >= :startDateTime AND m.dateTime < :endDateTime"
                 + " ORDER BY m.dateTime DESC"
         )
@@ -24,7 +25,7 @@ import java.time.LocalTime;
 @Table(name = "meal", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date_time"})})
 public class Meal extends AbstractBaseEntity {
 
-    public static final String BY_USERS = "Meal.getByUsers";
+    public static final String GET = "Meal.getById";
     public static final String DELETE = "Meal.delete";
     public static final String ALL_SORTED = "Meal.getAllSortedByDateTimeDesc";
     public static final String ALL_FILTER_BY_DATE_TIME_SORTED = "Meal.getAllFilteredByDateTimeAndSortedByDateTimeDesc";
@@ -35,10 +36,10 @@ public class Meal extends AbstractBaseEntity {
 
     @Column(name = "description", nullable = false)
     @NotBlank
+    @Size(max = 256)
     private String description;
 
-    @Column(name = "calories", nullable = false)
-    @NotNull
+    @Column(name = "calories")
     @Range(min = 10, max = 10000)
     private int calories;
 

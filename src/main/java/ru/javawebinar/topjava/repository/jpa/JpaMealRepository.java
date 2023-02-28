@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
+@Transactional(readOnly = true)
 public class JpaMealRepository implements MealRepository {
 
     @PersistenceContext
@@ -39,14 +40,15 @@ public class JpaMealRepository implements MealRepository {
     @Override
     @Transactional
     public boolean delete(int id, int userId) {
-        return em.createNamedQuery(User.DELETE)
+        return em.createNamedQuery(Meal.DELETE)
                 .setParameter("id", id)
+                .setParameter("userId", userId)
                 .executeUpdate() != 0;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        return DataAccessUtils.singleResult(em.createNamedQuery(Meal.BY_USERS, Meal.class)
+        return DataAccessUtils.singleResult(em.createNamedQuery(Meal.GET, Meal.class)
                 .setParameter("id", id)
                 .setParameter("userId", userId)
                 .getResultList());
