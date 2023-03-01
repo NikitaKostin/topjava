@@ -25,7 +25,7 @@ import java.time.LocalTime;
 @Table(name = "meal", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date_time"})})
 public class Meal extends AbstractBaseEntity {
 
-    public static final String GET = "Meal.getById";
+    public static final String GET = "Meal.get";
     public static final String DELETE = "Meal.delete";
     public static final String ALL_SORTED = "Meal.getAllSortedByDateTimeDesc";
     public static final String ALL_FILTER_BY_DATE_TIME_SORTED = "Meal.getAllFilteredByDateTimeAndSortedByDateTimeDesc";
