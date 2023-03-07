@@ -26,7 +26,7 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     @Modifying
     @Query("""
                  SELECT m FROM Meal m
-                 WHERE m.user.id=:userId AND m.dateTime >= :startDateTime AND m.dateTime < :endDateTime 
+                 WHERE m.user.id=:userId AND m.dateTime >= :startDateTime AND m.dateTime < :endDateTime
                  ORDER BY m.dateTime DESC
             """)
     List<Meal> findAllByUserIdAndBetweenHalfOpen(
