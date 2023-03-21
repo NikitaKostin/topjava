@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.web.RootController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
@@ -18,59 +17,60 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 
 @Controller
-@RequestMapping("/topjava/meals")
+@RequestMapping("/meals")
 public class JspMealController extends AbstractMealController {
-    private static final Logger log = LoggerFactory.getLogger(RootController.class);
+    private static final Logger log = LoggerFactory.getLogger(JspMealController.class);
 
-    @PostMapping("/{id}/update")
-    public String updateMeal(Model model, @PathVariable String id) {
+    @GetMapping("/{id}/update")
+    public String update(Model model, @PathVariable String id) {
         log.info("updateMeal {}", id);
         model.addAttribute("meal", super.get(Integer.parseInt(id)));
         return "mealForm";
     }
 
     @PostMapping("/{id}/delete")
-    public String deleteMeal(@PathVariable String id) {
+    public String delete(@PathVariable String id) {
         log.info("deleteMeal {}", id);
         super.delete(Integer.parseInt(id));
-        return "redirect:/topjava/meals";
+        return "redirect:/meals";
     }
 
-    @PostMapping("/create")
-    public String createMeal(Model model) {
+    @GetMapping("/create")
+    public String create(Model model) {
         log.info("createMeal");
         model.addAttribute("meal", new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000));
         return "mealForm";
     }
 
-    @PostMapping(value = "/save")
-    public String saveMeal(HttpServletRequest request) {
+    @PostMapping("/save")
+    public String save(HttpServletRequest request) {
         log.info("saveMeal");
         super.create(fillMeal(request));
-        return "redirect:/topjava/meals";
+        return "redirect:/meals";
     }
 
-    @PostMapping(value = "{id}/save")
-    public String updateMealWithId(HttpServletRequest request, @PathVariable() Integer id) {
-        log.info("updateMealWithId {}", id);
+    @PostMapping("{id}/save")
+    public String updateWithId(HttpServletRequest request, @PathVariable() Integer id) {
+        log.info("updateWithId {}", id);
         super.update(fillMeal(request), id);
-        return "redirect:/topjava/meals";
+        return "redirect:/meals";
     }
 
     @GetMapping
-    public String getMeals(HttpServletRequest request, Model model) {
-        String action = request.getParameter("action");
-        if ("filter".equals(action)) {
-            log.info("meals with filter");
-            LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
-            LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
-            LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
-            LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
-            model.addAttribute("meals", super.getBetween(startDate, startTime, endDate, endTime));
-        } else {
-            log.info("meals");
-            model.addAttribute("meals", super.getAll());
-        }
+    public String get(Model model) {
+        log.info("meals");
+        model.addAttribute("meals", super.getAll());
+        return "meals";
+    }
+
+    @GetMapping("/filter")
+    public String getBetween(HttpServletRequest request, Model model) {
+        log.info("meals with filter");
+        LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
+        LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
+        LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
+        LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
+        model.addAttribute("meals", super.getBetween(startDate, startTime, endDate, endTime));
         return "meals";
     }
 

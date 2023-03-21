@@ -16,8 +16,7 @@
 <section>
     <hr/>
     <h2><spring:message code="meal.title"/></h2>
-    <form method="get" action="meals">
-        <input type="hidden" name="action" value="filter">
+    <form method="get" action="meals/filter">
         <dl>
             <dt><spring:message code="meal.fromDate"/>:</dt>
             <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
@@ -37,7 +36,7 @@
         <button type="submit"><spring:message code="meal.filter"/></button>
     </form>
     <hr/>
-    <form action="meals/create" method="post">
+    <form action="meals/create" method="get">
         <button type="submit"><spring:message code="meal.add"/></button>
     </form>
     <br><br>
@@ -63,7 +62,7 @@
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
                 <td>
-                    <form action="meals/${meal.id}/update" method="post">
+                    <form action="meals/${meal.id}/update" method="get">
                         <button  type="submit"><spring:message code="meal.update"/></button>
                     </form>
                 </td>
