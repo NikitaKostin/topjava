@@ -3,22 +3,12 @@ package ru.javawebinar.topjava.web.converter;
 import org.springframework.core.convert.converter.Converter;
 
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
-public class StringToLocalTimeConverter implements Converter<String, LocalTime> {
+import static ru.javawebinar.topjava.util.DateTimeUtil.getDateTimeFormatterTime;
 
-    private String timePattern = "HH:mm:ss";
-
-    public String getTimePattern() {
-        return timePattern;
-    }
-
-    public void setTimePattern(String timePattern) {
-        this.timePattern = timePattern;
-    }
-
+public final class StringToLocalTimeConverter implements Converter<String, LocalTime> {
     @Override
     public LocalTime convert(String timeString) {
-        return LocalTime.parse(timeString, DateTimeFormatter.ofPattern(timePattern));
+        return LocalTime.parse(timeString, getDateTimeFormatterTime());
     }
 }

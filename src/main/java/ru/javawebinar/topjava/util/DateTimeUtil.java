@@ -10,6 +10,8 @@ import java.time.format.DateTimeFormatter;
 
 public class DateTimeUtil {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER_DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER_TIME = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     // DB doesn't support LocalDate.MIN/MAX
     private static final LocalDateTime MIN_DATE = LocalDateTime.of(1, 1, 1, 0, 0);
@@ -38,5 +40,13 @@ public class DateTimeUtil {
     public static @Nullable
     LocalTime parseLocalTime(@Nullable String str) {
         return StringUtils.hasLength(str) ? LocalTime.parse(str) : null;
+    }
+
+    public static DateTimeFormatter getDateTimeFormatterDate(){
+        return DATE_TIME_FORMATTER_DATE;
+    }
+
+    public static DateTimeFormatter getDateTimeFormatterTime(){
+        return DATE_TIME_FORMATTER_TIME;
     }
 }

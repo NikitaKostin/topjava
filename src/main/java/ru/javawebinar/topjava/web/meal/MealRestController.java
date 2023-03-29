@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.web.meal;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.Meal;
@@ -14,19 +13,17 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping(value = MealRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class MealRestController extends AbstractMealController {
     static final String REST_URL = "/rest/meal";
 
     @GetMapping
-    @ResponseBody
     public List<MealTo> getAll() {
         return super.getAll();
     }
 
     @GetMapping("/{id}")
-    @ResponseBody
     public Meal get(@PathVariable int id) {
         return super.get(id);
     }
@@ -53,18 +50,9 @@ public class MealRestController extends AbstractMealController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
-//    @GetMapping("/filter")
-//    @ResponseBody
-//    public List<MealTo> get(
-//            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam LocalDateTime startDateTime,
-//            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam LocalDateTime endDateTime
-//    ) {
-//        return super.getBetween(startDateTime.toLocalDate(), startDateTime.toLocalTime(), endDateTime.toLocalDate(), endDateTime.toLocalTime());
-//    }
-
     @GetMapping("/filter")
     @ResponseBody
-    public List<MealTo> get(
+    public List<MealTo> getWithFilter(
             @RequestParam(required = false) LocalDate startDate,
             @RequestParam(required = false) LocalTime startTime,
             @RequestParam(required = false) LocalDate endDate,
