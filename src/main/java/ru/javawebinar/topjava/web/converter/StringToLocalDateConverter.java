@@ -3,12 +3,13 @@ package ru.javawebinar.topjava.web.converter;
 import org.springframework.core.convert.converter.Converter;
 
 import java.time.LocalDate;
-
-import static ru.javawebinar.topjava.util.DateTimeUtil.getDateTimeFormatterDate;
+import java.time.format.DateTimeFormatter;
 
 public final class StringToLocalDateConverter implements Converter<String, LocalDate> {
+    private static final DateTimeFormatter DATE_TIME_FORMATTER_DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     @Override
     public LocalDate convert(String dateString) {
-        return LocalDate.parse(dateString, getDateTimeFormatterDate());
+        return LocalDate.parse(dateString, DATE_TIME_FORMATTER_DATE);
     }
 }

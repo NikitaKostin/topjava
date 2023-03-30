@@ -51,7 +51,6 @@ public class MealRestController extends AbstractMealController {
     }
 
     @GetMapping("/filter")
-    @ResponseBody
     public List<MealTo> getWithFilter(
             @RequestParam(required = false) LocalDate startDate,
             @RequestParam(required = false) LocalTime startTime,
