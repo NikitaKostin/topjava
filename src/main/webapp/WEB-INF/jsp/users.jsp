@@ -31,14 +31,14 @@
             </thead>
             <c:forEach items="${requestScope.users}" var="user">
                 <jsp:useBean id="user" type="ru.javawebinar.topjava.model.User"/>
-                <tr>
+                <tr id="${user.id}">
                     <td><c:out value="${user.name}"/></td>
                     <td><a href="mailto:${user.email}">${user.email}</a></td>
                     <td>${user.roles}</td>
-                    <td><input type="checkbox" <c:if test="${user.enabled}">checked</c:if> id="${user.id}"/></td>
+                    <td><input type="checkbox" <c:if test="${user.enabled}">checked</c:if>/></td>
                     <td><fmt:formatDate value="${user.registered}" pattern="dd-MMMM-yyyy"/></td>
                     <td><a><span class="fa fa-pencil"></span></a></td>
-                    <td><a class="delete" id="${user.id}"><span class="fa fa-remove"></span></a></td>
+                    <td><a class="delete"><span class="fa fa-remove"></span></a></td>
                 </tr>
             </c:forEach>
         </table>
@@ -50,7 +50,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title"><spring:message code="user.add"/></h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-dismiss="modal" onclick="closeNoty()">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="detailsForm">
@@ -76,7 +76,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeNoty()">
                     <span class="fa fa-close"></span>
                     <spring:message code="common.cancel"/>
                 </button>
