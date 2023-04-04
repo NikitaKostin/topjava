@@ -3,13 +3,13 @@ let form;
 function makeEditable(datatableApi) {
     ctx.datatableApi = datatableApi;
     form = $('#detailsForm');
-    $(".delete").click(() => {
+    $(".delete").click(function () {
         if (confirm('Are you sure?')) {
             deleteRow($(this).closest('tr').attr("id"));
         }
     });
 
-    $(document).ajaxError((event, jqXHR,) => {
+    $(document).ajaxError((event, jqXHR) => {
         failNoty(jqXHR);
     });
 
@@ -33,7 +33,11 @@ function deleteRow(id) {
 }
 
 function updateTable() {
-    $.get(ctx.ajaxUrl, data => ctx.datatableApi.clear().rows.add(data).draw());
+    $.get(ctx.ajaxUrl, data => updateContextDataTable(data));
+}
+
+function updateContextDataTable(data) {
+    ctx.datatableApi.clear().rows.add(data).draw();
 }
 
 function save() {

@@ -45,7 +45,7 @@ function filter() {
         url: ctx.ajaxUrl + "filter",
         data:  $('#filterForm').serialize(),
     }).done(data => {
-        ctx.datatableApi.clear().rows.add(data).draw();
+        updateContextDataTable(data);
         successNoty("Filtered");
     });
 }
