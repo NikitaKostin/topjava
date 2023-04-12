@@ -5,7 +5,10 @@
 
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
-<jsp:include page="fragments/locale.jsp"/>
+<jsp:include page="fragments/locale.jsp">
+    <jsp:param name="addTitle" value="user.add"/>
+    <jsp:param name="editTitle" value="user.edit"/>
+</jsp:include>
 <body>
 <script src="resources/js/topjava.common.js" defer></script>
 <script src="resources/js/topjava.users.js" defer></script>
@@ -79,8 +82,4 @@
 </div>
 <jsp:include page="fragments/footer.jsp"/>
 </body>
-<script type="text/javascript">
-    i18n["addTitle"] = '<spring:message code="user.add"/>';
-    i18n["editTitle"] = '<spring:message code="user.edit"/>';
-</script>
 </html>

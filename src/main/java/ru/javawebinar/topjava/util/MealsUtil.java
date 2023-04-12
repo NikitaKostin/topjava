@@ -1,10 +1,8 @@
 package ru.javawebinar.topjava.util;
 
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.Role;
-import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.to.InputMealTo;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.to.UserTo;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,8 +17,8 @@ public class MealsUtil {
     private MealsUtil() {
     }
 
-    public static Meal createNewFromTo(MealTo mealTo) {
-        return new  Meal(null, mealTo.getDateTime(), mealTo.getDescription(), mealTo.getCalories());
+    public static Meal createNewFromTo(InputMealTo inputMealTo) {
+        return new  Meal(null, inputMealTo.getDateTime(), inputMealTo.getDescription(), inputMealTo.getCalories());
     }
 
     public static List<MealTo> getTos(Collection<Meal> meals, int caloriesPerDay) {
@@ -48,10 +46,10 @@ public class MealsUtil {
         return new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
 
-    public static Meal updateFromTo(Meal meal, MealTo mealTo) {
-        meal.setDateTime(mealTo.getDateTime());
-        meal.setDescription(mealTo.getDescription());
-        meal.setCalories(mealTo.getCalories());
+    public static Meal updateFromTo(Meal meal, InputMealTo inputMealTo) {
+        meal.setDateTime(inputMealTo.getDateTime());
+        meal.setDescription(inputMealTo.getDescription());
+        meal.setCalories(inputMealTo.getCalories());
         return meal;
     }
 }

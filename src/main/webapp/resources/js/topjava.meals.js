@@ -32,7 +32,7 @@ $(function () {
                     "render": function (date, type, _) {
                         if (type === "display") {
                             [yyyy, mm, dd, hh, mi] = date.split(/[/:\-T]/)
-                            return `${dd}-${mm}-${yyyy} ${hh}:${mi}`;
+                            return `${yyyy}-${mm}-${dd} ${hh}:${mi}`;
                         }
                         return date;
                     }
