@@ -60,6 +60,7 @@ public class ExceptionInfoHandler {
         } else {
             log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
         }
-        return new ErrorInfo(req.getRequestURL(), errorType, rootCause.toString());
+        String[] splitDetail = rootCause.toString().split(":");
+        return new ErrorInfo(req.getRequestURL(), errorType, splitDetail.length > 1 ? splitDetail[1] : splitDetail[0]);
     }
 }

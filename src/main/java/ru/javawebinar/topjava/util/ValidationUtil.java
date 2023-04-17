@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.util;
 
 
 import org.springframework.core.NestedExceptionUtils;
-import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.BindingResult;
 import ru.javawebinar.topjava.HasId;
@@ -12,6 +11,8 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import javax.validation.*;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static ru.javawebinar.topjava.util.exception.ErrorType.VALIDATION_ERROR;
 
 public class ValidationUtil {
 
@@ -77,11 +78,20 @@ public class ValidationUtil {
         return rootCause != null ? rootCause : t;
     }
 
-    public static ResponseEntity<String> getErrorResponse(BindingResult result) {
-        return ResponseEntity.unprocessableEntity().body(
-                result.getFieldErrors().stream()
-                        .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
-                        .collect(Collectors.joining("<br>"))
-        );
+    public static String getErrors(BindingResult result) {
+        return result.getFieldErrors().stream()
+                .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
+                .collect(Collectors.joining("<br>")
+                );
+    }
+
+    public static String getUserEmailMessageOrDefault(Exception exception) {
+        Throwable rootCause = getRootCause(exception);
+        String message = rootCause.toString();
+        return message != null && message.contains("users_unique_email_idx") ? "User with this email already exists" : message;
+    }
+
+    public static void setUserEmailErrorToBindingResult(BindingResult result, Exception exception) {
+        result.rejectValue("email", VALIDATION_ERROR.toString(), getUserEmailMessageOrDefault(exception));
     }
 }
