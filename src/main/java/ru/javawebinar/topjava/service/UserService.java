@@ -35,7 +35,6 @@ public class UserService implements UserDetailsService {
     }
 
     @CacheEvict(value = "users", allEntries = true)
-    @Transactional
     public User create(User user) {
         Assert.notNull(user, "user must not be null");
         return prepareAndSave(user);
@@ -61,7 +60,6 @@ public class UserService implements UserDetailsService {
     }
 
     @CacheEvict(value = "users", allEntries = true)
-    @Transactional
     public void update(User user) {
         Assert.notNull(user, "user must not be null");
 //      checkNotFoundWithId : check works only for JDBC, disabled

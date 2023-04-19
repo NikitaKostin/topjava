@@ -15,12 +15,10 @@ import ru.javawebinar.topjava.web.AbstractControllerTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.javawebinar.topjava.TestUtil.userHttpBasic;
 import static ru.javawebinar.topjava.UserTestData.*;
-import static ru.javawebinar.topjava.util.exception.ErrorType.APP_ERROR;
-import static ru.javawebinar.topjava.util.exception.ErrorType.DATA_ERROR;
+import static ru.javawebinar.topjava.util.exception.ErrorType.VALIDATION_ERROR;
 
 class AdminRestControllerTest extends AbstractControllerTest {
 
@@ -103,15 +101,12 @@ class AdminRestControllerTest extends AbstractControllerTest {
     void updateInvalidName() throws Exception {
         User updated = getUpdated();
         updated.setName(null);
-        MvcResult mvcResult = perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
+        perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(updated, updated.getPassword())))
-                .andExpect(status().isInternalServerError())
-                .andReturn();
-
-        String response = mvcResult.getResponse().getContentAsString();
-        assertTrue(response.contains(APP_ERROR.toString()));
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.toString()));
     }
 
     @Test
@@ -119,15 +114,12 @@ class AdminRestControllerTest extends AbstractControllerTest {
     void updateDoubleEmail() throws Exception {
         User updated = getUpdated();
         updated.setEmail("admin@gmail.com");
-        MvcResult mvcResult = perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
+        perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(updated, updated.getPassword())))
-                .andExpect(status().isConflict())
-                .andReturn();
-
-        String response = mvcResult.getResponse().getContentAsString();
-        assertTrue(response.contains(DATA_ERROR.toString()));
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.toString()));
     }
 
     @Test
@@ -137,7 +129,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(newUser, newUser.getPassword())))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         User created = USER_MATCHER.readFromJson(action);
         int newId = created.id();
@@ -150,15 +142,12 @@ class AdminRestControllerTest extends AbstractControllerTest {
     void createWithLocationInvalidName() throws Exception {
         User newUser = getNew();
         newUser.setName(null);
-        MvcResult mvcResult = perform(MockMvcRequestBuilders.post(REST_URL)
+       perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(newUser, newUser.getPassword())))
-                .andExpect(status().isInternalServerError())
-                .andReturn();
-
-        String response = mvcResult.getResponse().getContentAsString();
-        assertTrue(response.contains(APP_ERROR.toString()));
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.toString()));
     }
 
     @Test
@@ -170,11 +159,11 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(newUser, newUser.getPassword())))
-                .andExpect(status().isConflict())
+                .andExpect(status().isUnprocessableEntity())
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        assertTrue(response.contains(DATA_ERROR.toString()));
+        assertTrue(response.contains(VALIDATION_ERROR.toString()));
     }
 
     @Test

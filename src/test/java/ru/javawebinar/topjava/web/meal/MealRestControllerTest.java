@@ -4,9 +4,10 @@ package ru.javawebinar.topjava.web.meal;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -14,18 +15,15 @@ import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.TestUtil.userHttpBasic;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 import static ru.javawebinar.topjava.UserTestData.user;
 import static ru.javawebinar.topjava.util.MealsUtil.createTo;
 import static ru.javawebinar.topjava.util.MealsUtil.getTos;
-import static ru.javawebinar.topjava.util.exception.ErrorType.APP_ERROR;
-import static ru.javawebinar.topjava.util.exception.ErrorType.DATA_ERROR;
+import static ru.javawebinar.topjava.util.exception.ErrorType.VALIDATION_ERROR;
 
 class MealRestControllerTest extends AbstractControllerTest {
 
@@ -85,16 +83,15 @@ class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @Transactional(propagation = Propagation.NEVER)
     void updateInvalidDescription() throws Exception {
         Meal updated = getUpdated();
         updated.setDescription(null);
-        MvcResult mvcResult = perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
+        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(updated)))
-                .andExpect(status().isInternalServerError())
-                .andReturn();
-        String response = mvcResult.getResponse().getContentAsString();
-        assertTrue(response.contains(APP_ERROR.toString()));
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.toString()));
     }
 
     @Test
@@ -117,15 +114,12 @@ class MealRestControllerTest extends AbstractControllerTest {
     void createWithLocationInvalidDescription() throws Exception {
         Meal newMeal = getNew();
         newMeal.setDescription(null);
-        MvcResult mvcResult = perform(MockMvcRequestBuilders.post(REST_URL)
+        perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(newMeal)))
-                .andExpect(status().isInternalServerError())
-                .andReturn();
-
-        String response = mvcResult.getResponse().getContentAsString();
-        assertTrue(response.contains(APP_ERROR.toString()));
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.toString()));
     }
 
     @Test

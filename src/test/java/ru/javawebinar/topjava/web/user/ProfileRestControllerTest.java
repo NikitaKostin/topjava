@@ -17,11 +17,10 @@ import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.javawebinar.topjava.TestUtil.userHttpBasic;
 import static ru.javawebinar.topjava.UserTestData.*;
-import static ru.javawebinar.topjava.util.exception.ErrorType.*;
+import static ru.javawebinar.topjava.util.exception.ErrorType.VALIDATION_ERROR;
 import static ru.javawebinar.topjava.web.user.ProfileRestController.REST_URL;
 
 class ProfileRestControllerTest extends AbstractControllerTest {
@@ -72,15 +71,13 @@ class ProfileRestControllerTest extends AbstractControllerTest {
     @Test
     void registerInvalidName() throws Exception {
         UserTo newTo = new UserTo(null, null, "newemail@ya.ru", "newPassword", 1500);
-        MvcResult mvcResult = perform(MockMvcRequestBuilders.post(REST_URL)
+        perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newTo)))
                 .andDo(print())
-                .andExpect(status().isInternalServerError())
-                .andReturn();
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.toString()));
 
-        String response = mvcResult.getResponse().getContentAsString();
-        assertTrue(response.contains(APP_ERROR.toString()));
     }
 
     @Test
@@ -91,11 +88,11 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newTo)))
                 .andDo(print())
-                .andExpect(status().isConflict())
+                .andExpect(status().isUnprocessableEntity())
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        assertTrue(response.contains(DATA_ERROR.toString()));
+        assertTrue(response.contains(VALIDATION_ERROR.toString()));
     }
 
     @Test
@@ -113,15 +110,12 @@ class ProfileRestControllerTest extends AbstractControllerTest {
     @Test
     void updateInvalidName() throws Exception {
         UserTo updatedTo = new UserTo(null, null, "user@yandex.ru", "newPassword", 1500);
-        MvcResult mvcResult = perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
+        perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(updatedTo)))
                 .andDo(print())
-                .andExpect(status().isInternalServerError())
-                .andReturn();
-
-        String response = mvcResult.getResponse().getContentAsString();
-        assertTrue(response.contains(APP_ERROR.toString()));
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.toString()));
     }
 
     @Test
@@ -132,11 +126,11 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(updatedTo)))
                 .andDo(print())
-                .andExpect(status().isConflict())
+                .andExpect(status().isUnprocessableEntity())
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        assertTrue(response.contains(DATA_ERROR.toString()));
+        assertTrue(response.contains(VALIDATION_ERROR.toString()));
     }
 
     @Test

@@ -31,7 +31,7 @@ public class ProfileUIController extends AbstractUserController {
             try {
                 super.update(userTo, SecurityUtil.authUserId());
             } catch (DataIntegrityViolationException exception) {
-                ValidationUtil.setUserEmailErrorToBindingResult(result, exception);
+                ValidationUtil.setUserEmailErrorToBindingResult(result);
                 return "profile";
             }
 
@@ -57,7 +57,8 @@ public class ProfileUIController extends AbstractUserController {
             try {
                 super.create(userTo);
             } catch (DataIntegrityViolationException exception) {
-                ValidationUtil.setUserEmailErrorToBindingResult(result, exception);
+                model.addAttribute("register", true);
+                ValidationUtil.setUserEmailErrorToBindingResult(result);
                 return "profile";
             }
 
